@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ stock.company_name }} Details
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center">{{ stock.company_name }} ({{ stock.ticker }})</h1>
+    <p class="text-center text-muted">Date: {{ stock.timestamp|date:"Y-m-d" }}</p>
+    <hr>
+
+    <div class="row">
+        <div class="col-md-6">
+            <p><strong>Open Price:</strong> ₹{{ stock.open_price }}</p>
+            <p><strong>Close Price:</strong> ₹{{ stock.close_price }}</p>
+            <p><strong>High Price:</strong> ₹{{ stock.high_price }}</p>
+            <p><strong>Low Price:</strong> ₹{{ stock.low_price }}</p>
+            <p>
+                <strong>Profit/Loss:</strong>
+                {{ profit_loss }} (₹{{ profit_loss_amount }})
+            </p>
+        </div>
+        <div class="col-md-6">
+            <div id="stockChart"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    const options = {
+        chart: {
+            type: 'line',
+            height: 350,
+        },
+        series: [
+            {
+                name: 'Price',
+                data: [
+                    { x: 'Open', y: {{ stock.open_price }} },
+                    { x: 'Close', y: {{ stock.close_price }} },
+                    { x: 'High', y: {{ stock.high_price }} },
+                    { x: 'Low', y: {{ stock.low_price }} },
+                ],
+            },
+        ],
+        xaxis: {
+            title: {
+                text: 'Type',
+            },
+        },
+        yaxis: {
+            title: {
+                text: 'Price (₹)',
+            },
+        },
+    };
+
+    const chart = new ApexCharts(document.querySelector("#stockChart"), options);
+    chart.render();
+</script>
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Portfolio List
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center">Portfolio List</h1>
+    <div class="text-end mb-3">
+        <a href="{% url 'portfolio_add' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add Portfolio
+        </a>
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Company</th>
+                <th>Ticker</th>
+                <th>Shares</th>
+                <th>Purchase Price</th>
+                <th>Purchase Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for portfolio in portfolios %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ portfolio.name }}</td>
+                <td>{{ portfolio.company_name }}</td>
+                <td>{{ portfolio.ticker }}</td>
+                <td>{{ portfolio.shares }}</td>
+                <td>₹{{ portfolio.purchase_price }}</td>
+                <td>{{ portfolio.purchase_date }}</td>
+                <td>
+                    <a href="{% url 'portfolio_edit' portfolio.pk %}" class="btn btn-sm btn-warning">
+                        <i class="bi bi-pencil"></i> Edit
+                    </a>
+                    <a href="{% url 'portfolio_delete' portfolio.pk %}" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i> Delete
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="text-center">No portfolios found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

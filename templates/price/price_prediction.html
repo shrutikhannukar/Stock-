@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h1>Price Predictions</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary mb-4">Generate Predictions</button>
+    </form>
+
+    {% if predictions_list %}
+    <h2>Predictions</h2>
+    <div class="row">
+        {% for item in predictions_list %}
+        {% for ticker, predictions in item.items %}
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ ticker }}</h5>
+                    <ul>
+                        {% for prediction in predictions %}
+                        <li>
+                            <strong>Date:</strong> {{ prediction.date }},
+                            <strong>Price:</strong> ₹{{ prediction.price }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    {% if candlestick_data %}
+    <h2>Stock Price Trends</h2>
+    <div id="line-chart" class="mb-5" style="height: 500px;"></div>
+    <script src="https://cdn.plot.ly/plotly-2.14.0.min.js"></script>
+    <script>
+        const candlestickData = {{ candlestick_data|safe }};
+        const traces = candlestickData.map(stock => ({
+            x: stock.dates,
+            y: stock.closes,
+            mode: 'lines',
+            name: stock.ticker
+        }));
+
+        const layout = {
+            title: 'Line Graph of Stock Prices',
+            xaxis: { title: 'Date' },
+            yaxis: { title: 'Price (₹)' },
+        };
+
+        Plotly.newPlot('line-chart', traces, layout);
+    </script>
+    {% endif %}
+
+    {% if errors %}
+    <div class="alert alert-danger mt-4">
+        <h4>Errors:</h4>
+        <ul>
+            {% for error in errors %}
+            <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
