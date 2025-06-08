@@ -1,9 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-import time
 import tempfile
+import time
 
 def main():
     options = Options()
@@ -11,12 +9,11 @@ def main():
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
 
-    # ✅ Use a unique temporary user-data-dir to avoid profile conflicts
-    temp_profile_dir = tempfile.mkdtemp()
-    options.add_argument(f'--user-data-dir={temp_profile_dir}')
+    # Create a temporary directory for user data to avoid conflicts
+    user_data_dir = tempfile.mkdtemp()
+    options.add_argument(f'--user-data-dir={user_data_dir}')
 
-    # ✅ Use WebDriverManager for ChromeDriver compatibility
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    driver = webdriver.Chrome(options=options)
 
     try:
         driver.get("http://13.201.166.12:8000")
