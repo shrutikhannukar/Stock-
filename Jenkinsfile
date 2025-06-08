@@ -15,16 +15,16 @@ pipeline {
             }
         }
 
-        stage('Copy Code to EC2') {
-            steps {
-                sshagent (credentials: [env.SSH_CREDENTIALS_ID]) {
-                    sh """
-                        ssh -o StrictHostKeyChecking=no ${DOCKER_USER}@${DOCKER_HOST_IP} 'mkdir -p ~/${DOCKER_APP_DIR}'
-                        scp -o StrictHostKeyChecking=no -r * ${DOCKER_USER}@${DOCKER_HOST_IP}:~/${DOCKER_APP_DIR}
-                    """
-                }
-            }
+       stage('Copy Code to EC2') {
+    steps {
+        sshagent(['ec2-ssh-key']) {
+            sh """
+            ssh -o StrictHostKeyChecking=no ubuntu@${DOCKER_HOST_IP} 'mkdir -p ~/${DOCKER_APP_DIR}'
+            scp -o StrictHostKeyChecking=no -r * ubuntu@${DOCKER_HOST_IP}:~/${DOCKER_APP_DIR}/
+            """
         }
+    }
+}
 
         stage('Build Docker Image') {
             steps {
