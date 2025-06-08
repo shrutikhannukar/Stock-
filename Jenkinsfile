@@ -8,12 +8,12 @@ pipeline {
     }
 
     stages {
-        stage('Clone Repository') {
-            steps {
-                // Clone your repo to Jenkins workspace
-                git 'https://github.com/shrutikhannukar/Stock-'
-            }
-        }
+       stage('Clone Repository') {
+    steps {
+        git 'https://github.com/shrutikhannukar/Stock-.git'
+    }
+}
+
 
         stage('Copy Code to EC2') {
             steps {
