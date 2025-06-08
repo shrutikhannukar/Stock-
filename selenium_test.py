@@ -5,8 +5,7 @@ import tempfile
 
 def main():
     options = Options()
-    options.binary_location = "/opt/google/chrome/google-chrome"  # 👈 Real Chrome binary
-
+    options.binary_location = "/opt/google/chrome/google-chrome"
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
@@ -18,8 +17,14 @@ def main():
 
     try:
         driver.get("http://13.201.166.12:8000")
-        time.sleep(2)
-        print("Page Title is:", driver.title)
+        print("Initial Page Title:", driver.title)
+
+        # 🔁 Auto-refresh loop: 5 times every 10 seconds
+        for i in range(5):
+            time.sleep(10)
+            driver.refresh()
+            print(f"Refreshed {i+1} times - Title: {driver.title}")
+
     finally:
         driver.quit()
 
