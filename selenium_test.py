@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import tempfile
 import time
+import tempfile
 
 def main():
     options = Options()
@@ -9,9 +9,9 @@ def main():
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
 
-    # Create a temporary directory for user data to avoid conflicts
-    user_data_dir = tempfile.mkdtemp()
-    options.add_argument(f'--user-data-dir={user_data_dir}')
+    # Add a unique user data directory to avoid conflicts
+    temp_dir = tempfile.mkdtemp()
+    options.add_argument(f'--user-data-dir={temp_dir}')
 
     driver = webdriver.Chrome(options=options)
 
