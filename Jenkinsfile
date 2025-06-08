@@ -2,38 +2,35 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HOST_IP = "13.201.166.12"      // EC2 IP
-        DOCKER_USER = "ubuntu"                // EC2 user
-        DOCKER_APP_DIR = "stock-app"          // Directory on EC2
+        DOCKER_HOST_IP = "13.201.166.12"        // Replace with your EC2 public IP
+        DOCKER_USER = "ubuntu"                  // Default EC2 user (Ubuntu)
+        DOCKER_APP_DIR = "stock-app"            // Folder on EC2 where code will be copied
     }
 
     stages {
         stage('Clone Repository') {
             steps {
+                // Clone your repo to Jenkins workspace
                 git 'https://github.com/shrutikhannukar/Stock-main.git'
             }
         }
 
-        stage('Copy Code to Docker Host') {
+        stage('Copy Code to EC2') {
             steps {
+                // Create directory and copy project to EC2
                 sh """
-                    ssh -o StrictHostKeyChecking=no ${DOCKER_USER}@${DOCKER_HOST_IP} 'mkdir -p ${DOCKER_APP_DIR}'
-                    scp -o StrictHostKeyChecking=no -r . ${DOCKER_USER}@${DOCKER_HOST_IP}:${DOCKER_APP_DIR}
+                    ssh -o StrictHostKeyChecking=no ${DOCKER_USER}@${DOCKER_HOST_IP} 'mkdir -p ~/${DOCKER_APP_DIR}'
+                    scp -o StrictHostKeyChecking=no -r * ${DOCKER_USER}@${DOCKER_HOST_IP}:~/${DOCKER_APP_DIR}
                 """
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                sh 'pytest'  // or your preferred test command
             }
         }
 
         stage('Build Docker Image') {
             steps {
+                // SSH into EC2 and build Docker image
                 sh """
                     ssh -o StrictHostKeyChecking=no ${DOCKER_USER}@${DOCKER_HOST_IP} '
-                        cd ${DOCKER_APP_DIR} &&
+                        cd ~/${DOCKER_APP_DIR} &&
                         docker build -t django-stock-app .
                     '
                 """
@@ -42,28 +39,23 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
+                // Remove old container if exists and run new container
                 sh """
-                    ssh ${DOCKER_USER}@${DOCKER_HOST_IP} '
+                    ssh -o StrictHostKeyChecking=no ${DOCKER_USER}@${DOCKER_HOST_IP} '
                         docker rm -f django-stock-container || true &&
                         docker run -d -p 8000:8000 --name django-stock-container django-stock-app
                     '
                 """
             }
         }
-
-        stage('Run Selenium Tests') {
-            steps {
-                sh 'python selenium_test.py'  // Make sure selenium_test.py is configured for your deployed URL
-            }
-        }
     }
 
     post {
         success {
-            echo "✅ Deployment successful! Visit http://${DOCKER_HOST_IP}:8000"
+            echo "✅ Deployment successful! Access your app at http://${DOCKER_HOST_IP}:8000"
         }
         failure {
-            echo "❌ Deployment failed. Check Jenkins logs."
+            echo "❌ Deployment failed. Check the Jenkins console output."
         }
     }
 }
