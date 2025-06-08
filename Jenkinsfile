@@ -1,10 +1,11 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_HOST_IP = "13.201.166.12"        // Replace with your EC2 public IP
-        DOCKER_USER = "ubuntu"                  // Default EC2 user (Ubuntu)
-        DOCKER_APP_DIR = "stock-app"            // Folder on EC2 where code will be copied
+       environment {
+        DOCKER_HOST_IP = "13.201.166.12"
+        DOCKER_USER = "ubuntu"
+        DOCKER_APP_DIR = "stock-app"
+        SSH_CREDENTIALS_ID = "ec2-ssh-key" // Add this line
     }
 
     stages {
