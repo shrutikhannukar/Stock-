@@ -2,15 +2,15 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HOST_IP = "13.201.166.12"          // Your Docker Host EC2 IP
-        DOCKER_USER = "ubuntu"                   // Default EC2 user
-        DOCKER_APP_DIR = "stock-app"             // Your app folder on EC2
+        DOCKER_HOST_IP = "13.201.166.12"      // EC2 IP
+        DOCKER_USER = "ubuntu"                // EC2 user
+        DOCKER_APP_DIR = "stock-app"          // Directory on EC2
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/shrutikhannukar/Stock-main.git'  // Full GitHub repo URL
+                git 'https://github.com/shrutikhannukar/Stock-main.git'
             }
         }
 
@@ -20,6 +20,12 @@ pipeline {
                     ssh -o StrictHostKeyChecking=no ${DOCKER_USER}@${DOCKER_HOST_IP} 'mkdir -p ${DOCKER_APP_DIR}'
                     scp -o StrictHostKeyChecking=no -r . ${DOCKER_USER}@${DOCKER_HOST_IP}:${DOCKER_APP_DIR}
                 """
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'pytest'  // or your preferred test command
             }
         }
 
@@ -42,6 +48,12 @@ pipeline {
                         docker run -d -p 8000:8000 --name django-stock-container django-stock-app
                     '
                 """
+            }
+        }
+
+        stage('Run Selenium Tests') {
+            steps {
+                sh 'python selenium_test.py'  // Make sure selenium_test.py is configured for your deployed URL
             }
         }
     }
