@@ -3,10 +3,11 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 import time
 import tempfile
+import shutil
 
 def main():
     options = Options()
-    options.binary_location = "/opt/google/chrome/google-chrome"  # Chrome binary path
+    options.binary_location = "/opt/google/chrome/google-chrome"  # Correct Chrome binary path
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
@@ -14,7 +15,8 @@ def main():
     temp_dir = tempfile.mkdtemp()
     options.add_argument(f'--user-data-dir={temp_dir}')
 
-    service = Service('/usr/bin/chromedriver')  # ChromeDriver path
+    service = Service(executable_path='/usr/bin/chromedriver')  # ChromeDriver path
+
     driver = webdriver.Chrome(service=service, options=options)
 
     try:
@@ -29,6 +31,7 @@ def main():
 
     finally:
         driver.quit()
+        shutil.rmtree(temp_dir)
 
 if __name__ == "__main__":
     main()
