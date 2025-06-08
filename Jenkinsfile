@@ -11,7 +11,7 @@ pipeline {
         stage('Clone Repository') {
             steps {
                 // Clone your repo to Jenkins workspace
-                git 'https://github.com/shrutikhannukar/Stock-main.git'
+                git 'https://github.com/shrutikhannukar/Stock-'
             }
         }
 
