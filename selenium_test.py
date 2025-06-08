@@ -5,7 +5,8 @@ import tempfile
 
 def main():
     options = Options()
-    options.binary_location = "/usr/bin/google-chrome"   # Specify Chrome binary explicitly
+    options.binary_location = "/usr/bin/google-chrome"  # <-- Add this line
+
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
