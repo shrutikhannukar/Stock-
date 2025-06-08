@@ -2,10 +2,10 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HOST_IP = "13.201.166.12"        // Replace with your EC2 public IP
-        DOCKER_USER = "ubuntu"                  // Default EC2 user (Ubuntu)
-        DOCKER_APP_DIR = "stock-app"            // Folder on EC2 where code will be copied
-        SSH_CREDENTIALS_ID = "ec2-ssh-key"      // ID of the key you added in Jenkins
+        DOCKER_HOST_IP = "13.201.166.12"        // Your EC2 public IP
+        DOCKER_USER = "ubuntu"                  // EC2 user
+        DOCKER_APP_DIR = "stock-app"            // Folder on EC2
+        SSH_CREDENTIALS_ID = "ec2-ssh-key"      // Jenkins SSH credential ID
     }
 
     stages {
@@ -15,25 +15,25 @@ pipeline {
             }
         }
 
-       stage('Copy Code to EC2') {
-    steps {
-        sshagent(['ec2-ssh-key']) {
-            sh """
-            ssh -o StrictHostKeyChecking=no ubuntu@${DOCKER_HOST_IP} 'mkdir -p ~/${DOCKER_APP_DIR}'
-            scp -o StrictHostKeyChecking=no -r * ubuntu@${DOCKER_HOST_IP}:~/${DOCKER_APP_DIR}/
-            """
+        stage('Copy Code to EC2') {
+            steps {
+                sshagent(['ec2-ssh-key']) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${DOCKER_USER}@${DOCKER_HOST_IP} 'mkdir -p ~/${DOCKER_APP_DIR}'
+                    scp -o StrictHostKeyChecking=no -r * ${DOCKER_USER}@${DOCKER_HOST_IP}:~/${DOCKER_APP_DIR}/
+                    """
+                }
+            }
         }
-    }
-}
 
         stage('Build Docker Image') {
             steps {
-                sshagent (credentials: [env.SSH_CREDENTIALS_ID]) {
+                sshagent(['ec2-ssh-key']) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${DOCKER_USER}@${DOCKER_HOST_IP} '
-                            cd ~/${DOCKER_APP_DIR} &&
-                            docker build -t django-stock-app .
-                        '
+                    ssh -o StrictHostKeyChecking=no ${DOCKER_USER}@${DOCKER_HOST_IP} '
+                        cd ~/${DOCKER_APP_DIR} &&
+                        docker build -t django-stock-app .
+                    '
                     """
                 }
             }
@@ -41,12 +41,12 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                sshagent (credentials: [env.SSH_CREDENTIALS_ID]) {
+                sshagent(['ec2-ssh-key']) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ${DOCKER_USER}@${DOCKER_HOST_IP} '
-                            docker rm -f django-stock-container || true &&
-                            docker run -d -p 8000:8000 --name django-stock-container django-stock-app
-                        '
+                    ssh -o StrictHostKeyChecking=no ${DOCKER_USER}@${DOCKER_HOST_IP} '
+                        docker rm -f django-stock-container || true &&
+                        docker run -d -p 8000:8000 --name django-stock-container django-stock-app
+                    '
                     """
                 }
             }
