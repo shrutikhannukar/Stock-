@@ -5,13 +5,13 @@ import tempfile
 
 def main():
     options = Options()
-options.binary_location = "/usr/bin/google-chrome"
-options.add_argument('--headless')
-options.add_argument('--no-sandbox')
-options.add_argument('--disable-dev-shm-usage')
+    options.binary_location = "/usr/bin/google-chrome"   # Specify Chrome binary explicitly
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
 
-temp_dir = tempfile.mkdtemp()
-options.add_argument(f'--user-data-dir={temp_dir}')
+    temp_dir = tempfile.mkdtemp()
+    options.add_argument(f'--user-data-dir={temp_dir}')
 
     driver = webdriver.Chrome(options=options)
 
