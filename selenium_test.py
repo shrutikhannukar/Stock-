@@ -5,7 +5,7 @@ import tempfile
 
 def main():
     options = Options()
-    options.binary_location = "/usr/bin/google-chrome-stable"  # << try this exact path
+    options.binary_location = "/opt/google/chrome/google-chrome"  # 👈 Real Chrome binary
 
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
