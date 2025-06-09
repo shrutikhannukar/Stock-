@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_HOST_IP = "13.201.166.12"        // Your EC2 public IP
+        DOCKER_HOST_IP = "13.233.100.149" "        // Your EC2 public IP
         DOCKER_USER = "ubuntu"                  // EC2 user
         DOCKER_APP_DIR = "stock-app"            // Folder on EC2
         SSH_CREDENTIALS_ID = "ec2-ssh-key"      // Jenkins SSH credential ID
