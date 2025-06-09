@@ -142,6 +142,8 @@ ALLOWED_HOSTS = ['13.234.21.81', 'localhost', '127.0.0.1']
 
 # Static and Media files settings (if any)
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
