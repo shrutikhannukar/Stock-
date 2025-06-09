@@ -138,11 +138,18 @@ LOGOUT_REDIRECT_URL = 'login'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 
+ALLOWED_HOSTS = ['13.234.21.81', 'localhost', '127.0.0.1']
+
+# Static and Media files settings (if any)
+STATIC_URL = '/static/'
+
+# Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'shrutikhannukar1020@gmail.com'
-EMAIL_HOST_PASSWORD = 'lqmydacrxiipteby'  # Your 16-char app password without spaces
+EMAIL_HOST_PASSWORD = 'lqmydacrxiipteby'  # Your 16-char Gmail app password
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 ADMIN_EMAIL = EMAIL_HOST_USER
+
