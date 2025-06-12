@@ -1,4 +1,4 @@
-yfinance
 Django==5.1.4
 gunicorn
+yfinance
 scikit-learn
