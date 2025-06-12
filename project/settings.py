@@ -138,7 +138,7 @@ LOGOUT_REDIRECT_URL = 'login'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 
-ALLOWED_HOSTS = ['13.234.21.81', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['13.203.185.85', 'localhost', '127.0.0.1']
 
 # Static and Media files settings (if any)
 STATIC_URL = '/static/'
