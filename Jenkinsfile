@@ -28,17 +28,17 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            steps {
-                sshagent(['ec2-ssh-key']) {
-                    sh """
-                    ssh -o StrictHostKeyChecking=no ${DOCKER_USER}@${DOCKER_HOST_IP} '
-                        cd ~/${DOCKER_APP_DIR} &&
-                        docker build -t django-stock-app .
-                    '
-                    """
-                }
-            }
+    steps {
+        sshagent (credentials: ['ec2-ssh-key']) {
+            sh '''
+                ssh -o StrictHostKeyChecking=no ubuntu@13.203.185.85 '
+                    cd ~/stock-app &&
+                    docker build --no-cache -t django-stock-app .
+                '
+            '''
         }
+    }
+}
 
         stage('Run Docker Container') {
             steps {
